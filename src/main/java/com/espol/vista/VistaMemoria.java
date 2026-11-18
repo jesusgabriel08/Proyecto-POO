@@ -18,6 +18,7 @@ class VistaMemoria {
         Carta[][] tablero = juego.getTablero();
         int totalPares = tablero.length * tablero[0].length / 2;
         System.out.printf("%n--- JUEGO DE MEMORIA ECOLOGICO ---%nEncuentra los %d pares!%n", totalPares);
+        mostrarUbicacionPares(tablero);
         mostrarTablero(tablero);
         marcador(juego, totalPares);
         if (consola.leer("Presione [ENTER] para comenzar o 0 para volver: ").equals("0")) {
@@ -76,6 +77,23 @@ class VistaMemoria {
     private void marcador(JuegoMemoria juego, int totalPares) {
         System.out.printf("%nTotal de Intentos: %d | Pares Encontrados: %d/%d%n",
                 juego.getTurnosJugados(), juego.getParesEncontrados(), totalPares);
+    }
+
+    private void mostrarUbicacionPares(Carta[][] tablero) {
+        int columnas = tablero[0].length;
+        int totalCartas = tablero.length * columnas;
+        System.out.println("\n--- UBICACION DE LOS PARES (REVISION) ---");
+        for (int primera = 0; primera < totalCartas; primera++) {
+            Carta carta = tablero[primera / columnas][primera % columnas];
+            for (int segunda = primera + 1; segunda < totalCartas; segunda++) {
+                Carta otra = tablero[segunda / columnas][segunda % columnas];
+                if (carta.getIdPar() == otra.getIdPar()) {
+                    System.out.printf("%s: posiciones %d y %d%n",
+                            carta.getContenido(), primera + 1, segunda + 1);
+                    break;
+                }
+            }
+        }
     }
 
     private void mostrarTablero(Carta[][] tablero) {
