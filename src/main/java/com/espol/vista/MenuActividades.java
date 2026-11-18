@@ -284,15 +284,9 @@ class MenuActividades {
 
             System.out.printf("%n>>> INICIANDO TRABAJO EN '%s' <<<%n", actividad.getNombre());
             System.out.println("Tecnica: " + nombre + " | Ciclo: 1/4");
-            //System.out.printf("Tiempo de Trabajo: %02d:00 minutos restantes%n", minutos);
-            if (tecnica == TipoTecnica.POMODORO) {
-              System.out.println("Tecnica: Pomodoro");
-              System.out.println("Tiempo de Trabajo: 25:00 minutos restantes");
-              } else {
-              System.out.println("Tecnica: Deep Work");
-              System.out.println("Tiempo de Trabajo: 90:00 minutos restantes");
-            }
-            if (consola.leer("[Simulacion: el sistema esperaria 25 minutos o la pulsacion de ENTER]").equals("0")) {
+            System.out.printf("Tiempo de Trabajo: %02d:00 minutos restantes%n", minutos);
+            if (consola.leer("[Simulacion: el sistema esperaria " + minutos
+                    + " minutos o la pulsacion de ENTER]").equals("0")) {
                 continue;
             }
             sistema.registrarSesionEnfoque(actividad, tecnica, LocalDate.now());
@@ -300,9 +294,8 @@ class MenuActividades {
             System.out.printf("Sesion registrada. Avance de la actividad ID %d: %.1f%%%n",
                     actividad.getId(), actividad.getPorcentajeAvance());
             if (opcion == 1) {
-                //System.out.printf("Ahora toma un DESCANSO: %02d:00 minutos restantes%n",
-                  //      SistemaManager.MINUTOS_DESCANSO_POMODORO);
-                System.out.println("Ahora toma un DESCANSO: 05:00 minutos restantes");
+                System.out.printf("Ahora toma un DESCANSO: %02d:00 minutos restantes%n",
+                        SistemaManager.MINUTOS_DESCANSO_POMODORO);
                 consola.pausa("para simular el descanso");
             }
         }
