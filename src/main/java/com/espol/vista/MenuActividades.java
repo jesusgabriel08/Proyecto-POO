@@ -257,9 +257,8 @@ class MenuActividades {
     void enfoque() {
         while (true) {
             System.out.println("\n--- T E C N I C A S  D E  E N F O Q U E ---");
-            System.out.printf("1. Iniciar Pomodoro (%d min Trabajo / %d min Descanso)%n",
-                    SistemaManager.MINUTOS_POMODORO, SistemaManager.MINUTOS_DESCANSO_POMODORO);
-            System.out.printf("2. Iniciar Deep Work (Sesion Larga de %d min)%n", SistemaManager.MINUTOS_DEEP_WORK);
+            System.out.println("1. Iniciar Pomodoro (" + SistemaManager.MINUTOS_POMODORO + " min Trabajo / " + SistemaManager.MINUTOS_DESCANSO_POMODORO + " min Descanso)");
+            System.out.println("2. Iniciar Deep Work (Sesion Larga de " + SistemaManager.MINUTOS_DEEP_WORK + " min)");
             System.out.println("3. Volver al Menu Principal");
             int opcion = consola.entero("Ingrese su opcion: ", 3);
             if (opcion == 0 || opcion == 3) {
@@ -281,22 +280,47 @@ class MenuActividades {
             if (actividad == null) {
                 continue;
             }
+            int totalCiclos = (opcion == 1) ? 4 : 1; // 4 vueltas para Pomodoro, 1 para Deep Work
 
-            System.out.printf("%n>>> INICIANDO TRABAJO EN '%s' <<<%n", actividad.getNombre());
-            System.out.println("Tecnica: " + nombre + " | Ciclo: 1/4");
-            System.out.printf("Tiempo de Trabajo: %02d:00 minutos restantes%n", minutos);
-            if (consola.leer("[Simulacion: el sistema esperaria " + minutos
-                    + " minutos o la pulsacion de ENTER]").equals("0")) {
-                continue;
-            }
-            sistema.registrarSesionEnfoque(actividad, tecnica, LocalDate.now());
-            System.out.println("\n--- TIEMPO DE TRABAJO TERMINADO ---");
-            System.out.printf("Sesion registrada. Avance de la actividad ID %d: %.1f%%%n",
-                    actividad.getId(), actividad.getPorcentajeAvance());
-            if (opcion == 1) {
-                System.out.printf("Ahora toma un DESCANSO: %02d:00 minutos restantes%n",
-                        SistemaManager.MINUTOS_DESCANSO_POMODORO);
-                consola.pausa("para simular el descanso");
+            for (int ciclo = 1; ciclo <= totalCiclos; ciclo++) {
+    
+              System.out.println("\n>>> INICIANDO TRABAJO EN '" + actividad.getNombre() + "' <<<");
+    
+            // Si es Pomodoro imprime el ciclo, si es Deep Work no imprime esa parte
+              if (opcion == 1) {
+                 System.out.println("Tecnica: Pomodoro | Ciclo: " + ciclo + "/4");
+              } else {
+                 System.out.println("Tecnica: Deep Work");
+              }
+    
+              System.out.println("Tiempo de Trabajo: " + minutos + ":00 minutos restantes");
+    
+             // La simulación de tiempo esperando el ENTER
+              String accion = consola.leer("[Simulacion] Presione [ENTER] para terminar el tiempo o 0 para salir: ");
+              if (accion.equals("0")) {
+                break; // Rompe el bucle for y termina anticipadamente
+              }
+    
+            // Registramos la sesión solo si presionó ENTER
+              sistema.registrarSesionEnfoque(actividad, tecnica, LocalDate.now());
+    
+              System.out.println("\n--- TIEMPO DE TRABAJO TERMINADO ---");
+              System.out.println("Sesion registrada. Avance de la actividad ID " + actividad.getId() + " actualizado a: " + String.format("%.1f", actividad.getPorcentajeAvance()) + "%");
+              if (actividad.getPorcentajeAvance() >= 100.0) {
+                System.out.println("¡Excelente! Has completado la actividad al 100%.");
+                break; // La palabra clave 'break' rompe el ciclo for inmediatamente
+              }
+            // Si es Pomodoro Y NO es el último ciclo, le damos el descanso
+              if (opcion == 1 && ciclo < 4) {
+                System.out.println("Ahora toma un DESCANSO: 05:00 minutos restantes");
+                String descanso = consola.leer("[Simulacion] Presione [ENTER] para terminar el descanso o 0 para salir: ");
+              if (descanso.equals("0")) {
+                break; // Rompe el bucle si no quiere hacer más descansos
+              }
+              } else if (opcion == 1 && ciclo == 4) {
+              System.out.println("¡Felicidades! Completaste los 4 ciclos Pomodoro.");
+              consola.leer("Presione [ENTER] para volver al menu...");
+              }
             }
         }
     }
